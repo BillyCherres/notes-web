@@ -2,6 +2,7 @@ import { useState } from "react";
 import NoteToolbar from "../components/NoteToolbar";
 import type { Note } from "../types/Note";
 import NoteList from "../components/NoteList";
+import NoteEditor from "../components/NoteEditor";
 
 export default function NotesPage() {
   const handleNew = () => { // temporary until we implement crud in the frontend
@@ -41,33 +42,7 @@ export default function NotesPage() {
         />
 
         {/* RIGHT SIDE — Editor */}
-        <main className="flex-1 overflow-hidden rounded-xl border bg-white shadow-sm">
-          <div className="h-full overflow-y-auto">
-            <div className="mx-auto max-w-3xl p-6">
-              {!selectedNote ? (
-                <div className="text-gray-500">
-                  Select a note to start editing.
-                </div>
-              ) : (
-                <>
-                  <input
-                    value={selectedNote.title}
-                    placeholder="Title"
-                    className="w-full border-b pb-3 text-3xl font-semibold text-gray-900 outline-none placeholder:text-gray-400"
-                    readOnly
-                  />
-
-                  <textarea
-                    value={selectedNote.content}
-                    placeholder="Write your note..."
-                    className="mt-5 w-full min-h-[65vh] resize-none text-base leading-7 text-gray-800 outline-none placeholder:text-gray-400"
-                    readOnly
-                  />
-                </>
-              )}
-            </div>
-          </div>
-        </main>
+        <NoteEditor selectedNote={selectedNote} readOnly />
       </div>
     </div>
   );
