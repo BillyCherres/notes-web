@@ -6,9 +6,10 @@ import type { Page } from "../types/Page"
 type NoteListProps = {
   selectedId: number | null
   onSelect: (note: Note) => void
+  refreshKey?: number
 }
 
-export default function NoteList({ selectedId, onSelect }: NoteListProps) {
+export default function NoteList({ selectedId, onSelect, refreshKey }: NoteListProps) {
   const [page, setPage] = useState<Page<Note> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -36,7 +37,7 @@ export default function NoteList({ selectedId, onSelect }: NoteListProps) {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [refreshKey])
 
   const notes = page?.content ?? []
 
