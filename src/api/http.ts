@@ -21,6 +21,9 @@ export async function request<T>(
     body: body === undefined ? undefined : JSON.stringify(body),
   })
 
+    // 204 No Content (for DELETE)
+  if (res.status === 204) return undefined as T;
+
   if (!res.ok) {
     const text = await res.text().catch(() => "")
     throw new Error(`Request failed (${res.status} ${res.statusText}): ${text}`)

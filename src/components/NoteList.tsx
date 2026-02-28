@@ -6,7 +6,7 @@ import type { Page } from "../types/Page"
 type NoteListProps = {
   selectedId: number | null
   onSelect: (note: Note) => void
-  refreshKey?: number
+  refreshKey: number
 }
 
 export default function NoteList({ selectedId, onSelect, refreshKey }: NoteListProps) {

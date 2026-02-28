@@ -16,5 +16,12 @@ export async function getNotes(page = 0, size = 20): Promise<Page<Note>> {
   return request<Page<Note>>(`/notes?page=${page}&size=${size}`)
 }
 
+export async function deleteNote(id: number): Promise<void> {
+  return request<void>(`/notes/${id}`, {
+    method: "DELETE",
+  });
+}
+
+
 
 
