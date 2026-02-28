@@ -3,12 +3,22 @@ import NoteToolbar from "../components/NoteToolbar";
 import type { Note } from "../types/Note";
 import NoteList from "../components/NoteList";
 import NoteEditor from "../components/NoteEditor";
+import { createNote } from "../api/notesApi";
 
 export default function NotesPage() {
-  const handleNew = () => { // temporary until we implement crud in the frontend
-    console.log("new");
-    refreshNotes();
+  const handleNew = async () => { 
+    try {
+      const created = await createNote({title:"New Note", content:"Enter your content here"});
+      // imediately show in editor
+      setSelectedNote(created);
+
+      // tell NoteList to refetch so it appears in the left
+      refreshNotes();
+    } catch(err){
+          console.log(err);
+    }
   };
+  
   const handleSave = () => console.log("save");
   const handleDelete = () => console.log("delete");
   const [refreshKey, setRefreshKey] = useState(0);
