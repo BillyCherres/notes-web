@@ -7,7 +7,11 @@ export default function LandingPage() {
     // Wake backend (fire and forget)
     fetch(import.meta.env.VITE_API_URL + "/health").catch(() => {});
 
-    await loginWithRedirect();
+    await loginWithRedirect({
+      authorizationParams: {
+        prompt: "login",
+      },
+    });
   };
 
   return (
