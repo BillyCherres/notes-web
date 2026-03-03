@@ -1,3 +1,5 @@
+import { useAuth0 } from "@auth0/auth0-react"
+
 type NoteToolbarProps = {
   onNew: () => void
   onSave: () => void
@@ -15,6 +17,9 @@ export default function NoteToolbar({
   deleteDisabled = false,
   statusText,
 }: NoteToolbarProps) {
+
+  const { user, isAuthenticated, logout } = useAuth0()
+
   return (
     <div className="flex items-center justify-between px-6 py-4 border-b bg-white">
       
@@ -54,9 +59,46 @@ export default function NoteToolbar({
         </button>
       </div>
 
-      {/* Right Status */}
-      <div className="text-sm text-gray-500">
-        {statusText}
+      {/* Right Side */}
+      <div className="flex items-center gap-4">
+        
+        {/* Status Text */}
+        {statusText && (
+          <div className="text-sm text-gray-500">
+            {statusText}
+          </div>
+        )}
+
+        {/* User Info */}
+        {isAuthenticated && user && (
+          <div className="flex items-center gap-3">
+            
+            {user.picture && (
+              <img
+                src={user.picture}
+                alt="profile"
+                className="w-8 h-8 rounded-full"
+              />
+            )}
+
+            <span className="text-sm font-medium text-gray-700">
+              {user.name || user.email}
+            </span>
+
+            <button
+              onClick={() =>
+                logout({
+                  logoutParams: {
+                    returnTo: window.location.origin,
+                  },
+                })
+              }
+              className="text-sm text-red-500 hover:underline"
+            >
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
