@@ -3,6 +3,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import type { Note } from "../types/Note";
 import { EMPTY_TIPTAP_DOC } from "../editor/emptyDoc";
+import ButtonRow from "./ButtonRow";
 
 type NoteEditorProps = {
   title: string;
@@ -45,9 +46,7 @@ export default function NoteEditor({
     }
 
     try {
-      const parsed = contentJson
-        ? JSON.parse(contentJson)
-        : EMPTY_TIPTAP_DOC;
+      const parsed = contentJson ? JSON.parse(contentJson) : EMPTY_TIPTAP_DOC;
 
       editor.commands.setContent(parsed, { emitUpdate: false });
     } catch {
@@ -69,7 +68,7 @@ export default function NoteEditor({
                 className="w-full border-b pb-3 text-3xl font-semibold text-gray-900 outline-none placeholder:text-gray-400"
                 onChange={(e) => onChangeTitle?.(e.target.value)}
               />
-
+              <ButtonRow editor={editor} />
               <EditorContent editor={editor} />
             </>
           )}
