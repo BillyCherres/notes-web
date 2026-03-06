@@ -1,9 +1,13 @@
+import { useEffect } from "react";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import type { Note } from "../types/Note";
+import { EMPTY_TIPTAP_DOC } from "../editor/emptyDoc";
 
 type NoteEditorProps = {
   title: string;
-  content: string;
-  
+  contentJson: string;
+
   onChangeTitle?: (value: string) => void;
   onChangeContent?: (value: string) => void;
 
@@ -12,11 +16,45 @@ type NoteEditorProps = {
 
 export default function NoteEditor({
   title,
-  content,
-  onChangeTitle, 
+  contentJson,
+  onChangeTitle,
   onChangeContent,
-  selectedNote
+  selectedNote,
 }: NoteEditorProps) {
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: EMPTY_TIPTAP_DOC,
+    immediatelyRender: false,
+    onUpdate({ editor }) {
+      onChangeContent?.(JSON.stringify(editor.getJSON()));
+    },
+    editorProps: {
+      attributes: {
+        class:
+          "mt-5 min-h-[65vh] outline-none text-base leading-7 text-gray-800",
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (!editor) return;
+
+    if (!selectedNote) {
+      editor.commands.setContent(EMPTY_TIPTAP_DOC, { emitUpdate: false });
+      return;
+    }
+
+    try {
+      const parsed = contentJson
+        ? JSON.parse(contentJson)
+        : EMPTY_TIPTAP_DOC;
+
+      editor.commands.setContent(parsed, { emitUpdate: false });
+    } catch {
+      editor.commands.setContent(EMPTY_TIPTAP_DOC, { emitUpdate: false });
+    }
+  }, [editor, selectedNote, contentJson]);
+
   return (
     <main className="flex-1 overflow-hidden rounded-xl border bg-white shadow-sm">
       <div className="h-full overflow-y-auto">
@@ -27,17 +65,12 @@ export default function NoteEditor({
             <>
               <input
                 value={title}
-                placeholder="write your content"
+                placeholder="Write your title"
                 className="w-full border-b pb-3 text-3xl font-semibold text-gray-900 outline-none placeholder:text-gray-400"
                 onChange={(e) => onChangeTitle?.(e.target.value)}
               />
 
-              <textarea
-                value={content}
-                placeholder="Write your note..."
-                className="mt-5 w-full min-h-[65vh] resize-none text-base leading-7 text-gray-800 outline-none placeholder:text-gray-400"
-                onChange={(e) => onChangeContent?.(e.target.value)}
-              />
+              <EditorContent editor={editor} />
             </>
           )}
         </div>

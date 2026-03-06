@@ -4,18 +4,16 @@ import type { Note } from "../types/Note";
 import NoteList from "../components/NoteList";
 import NoteEditor from "../components/NoteEditor";
 import { createNote, deleteNote, updateNote } from "../api/notesApi";
+import { EMPTY_TIPTAP_DOC_STRING } from "../editor/emptyDoc";
 
 export default function NotesPage() {
   const handleNew = async () => {
     try {
       const created = await createNote({
         title: "New Note",
-        content: "Enter your content here",
+        contentJson: EMPTY_TIPTAP_DOC_STRING,
       });
-      // imediately show in editor
-      handleSelect(created)
-
-      // tell NoteList to refetch so it appears in the left
+      handleSelect(created);
       refreshNotes();
     } catch (err) {
       console.log(err);
@@ -45,13 +43,13 @@ export default function NotesPage() {
 
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [draftTitle, setDraftTitle] = useState("");
-  const [draftContent, setDraftContent] = useState("");
+  const [draftContentJson, setDraftContentJson] = useState("");
   const [isDirty, setIsDirty] = useState(false);
 
   const handleSelect = (note: Note) => {
     setSelectedNote(note);
     setDraftTitle(note.title);
-    setDraftContent(note.content);
+    setDraftContentJson(note.contentJson);
     setIsDirty(false);
   };
 
@@ -59,17 +57,17 @@ export default function NotesPage() {
     setDraftTitle(v);
     setIsDirty(true);
   };
+
   const onChangeContent = (v: string) => {
-    setDraftContent(v);
+    setDraftContentJson(v);
     setIsDirty(true);
   };
 
-  const handleSave = async (id: number, title: string, content: string) => {
+  const handleSave = async (id: number, title: string, contentJson: string) => {
     try {
-      const updatedNote = await updateNote(id, { title, content });
+      const updatedNote = await updateNote(id, { title, contentJson });
       setSelectedNote(updatedNote);
       setIsDirty(false);
-      // just incase title is changed
       refreshNotes();
     } catch (err) {
       console.log(err);
@@ -78,12 +76,11 @@ export default function NotesPage() {
 
   const handleSaveToolbar = async () => {
     if (!selectedNote) return;
-    await handleSave(selectedNote.id, draftTitle, draftContent);
+    await handleSave(selectedNote.id, draftTitle, draftContentJson);
   };
 
   return (
     <div className="h-screen bg-gray-100">
-      {/* Toolbar */}
       <div className="sticky top-0 z-10 border-b bg-white">
         <div className="mx-auto max-w-6xl px-4">
           <NoteToolbar
@@ -97,19 +94,16 @@ export default function NotesPage() {
         </div>
       </div>
 
-      {/* Content Layout */}
       <div className="mx-auto flex h-[calc(100vh-56px)] max-w-6xl gap-4 px-4 py-4">
-        {/* LEFT SIDE — Note List */}
         <NoteList
           selectedId={selectedNote?.id ?? null}
           onSelect={handleSelect}
           refreshKey={refreshKey}
         />
 
-        {/* RIGHT SIDE — Editor */}
         <NoteEditor
           title={draftTitle}
-          content={draftContent}
+          contentJson={draftContentJson}
           onChangeTitle={onChangeTitle}
           onChangeContent={onChangeContent}
           selectedNote={selectedNote}
