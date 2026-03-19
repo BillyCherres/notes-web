@@ -32,7 +32,7 @@ export default function NoteEditor({
     editorProps: {
       attributes: {
         class:
-          "mt-5 min-h-[65vh] outline-none text-base leading-7 text-gray-800",
+          "mt-5 min-h-[65vh] outline-none text-base leading-7 text-gray-800 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6",
       },
     },
   });

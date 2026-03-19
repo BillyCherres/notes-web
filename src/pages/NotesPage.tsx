@@ -89,7 +89,6 @@ export default function NotesPage() {
             onDelete={handleDeleteToolbar}
             saveDisabled={!selectedNote || !isDirty}
             deleteDisabled={!selectedNote}
-            statusText="Saved"
           />
         </div>
       </div>

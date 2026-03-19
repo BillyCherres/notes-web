@@ -1,3 +1,4 @@
+import { useEditorState } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 
 type ButtonRowProps = {
@@ -5,6 +6,16 @@ type ButtonRowProps = {
 };
 
 export default function ButtonRow({ editor }: ButtonRowProps) {
+  const editorState = useEditorState({
+    editor,
+    selector: (ctx) => ({
+      isBold: ctx.editor?.isActive("bold") ?? false,
+      isItalic: ctx.editor?.isActive("italic") ?? false,
+      isBulletList: ctx.editor?.isActive("bulletList") ?? false,
+      isH1: ctx.editor?.isActive("heading", { level: 1 }) ?? false,
+    }),
+  });
+
   if (!editor) return null;
 
   const btn = "rounded border px-3 py-1 text-sm";
@@ -15,7 +26,7 @@ export default function ButtonRow({ editor }: ButtonRowProps) {
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`${btn} ${editor.isActive("bold") ? active : ""}`}
+        className={`${btn} ${editorState?.isBold ? active : ""}`}
       >
         Bold
       </button>
@@ -23,7 +34,7 @@ export default function ButtonRow({ editor }: ButtonRowProps) {
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`${btn} ${editor.isActive("italic") ? active : ""}`}
+        className={`${btn} ${editorState?.isItalic ? active : ""}`}
       >
         Italic
       </button>
@@ -31,7 +42,7 @@ export default function ButtonRow({ editor }: ButtonRowProps) {
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`${btn} ${editor.isActive("bulletList") ? active : ""}`}
+        className={`${btn} ${editorState?.isBulletList ? active : ""}`}
       >
         Bullet List
       </button>
@@ -41,9 +52,7 @@ export default function ButtonRow({ editor }: ButtonRowProps) {
         onClick={() =>
           editor.chain().focus().toggleHeading({ level: 1 }).run()
         }
-        className={`${btn} ${
-          editor.isActive("heading", { level: 1 }) ? active : ""
-        }`}
+        className={`${btn} ${editorState?.isH1 ? active : ""}`}
       >
         H1
       </button>
