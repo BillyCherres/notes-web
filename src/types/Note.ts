@@ -1,18 +1,18 @@
 export interface Note{
   id: number
   title: string
-  content: string
+  contentJson: string
   createdAt: string
   updatedAt: string
 }
 
 export type CreateNoteRequest = {
   title: string
-  content: string
+  contentJson: string
 }
 
 // similar for now but we will use patching later maybe?
 export type UpdateNoteRequest = {
   title: string
-  content: string
+  contentJson: string
 }

@@ -6,7 +6,6 @@ type NoteToolbarProps = {
   onDelete: () => void
   saveDisabled?: boolean
   deleteDisabled?: boolean
-  statusText?: string
 }
 
 export default function NoteToolbar({
@@ -15,7 +14,6 @@ export default function NoteToolbar({
   onDelete,
   saveDisabled = false,
   deleteDisabled = false,
-  statusText,
 }: NoteToolbarProps) {
 
   const { user, isAuthenticated, logout } = useAuth0()
@@ -62,13 +60,6 @@ export default function NoteToolbar({
       {/* Right Side */}
       <div className="flex items-center gap-4">
         
-        {/* Status Text */}
-        {statusText && (
-          <div className="text-sm text-gray-500">
-            {statusText}
-          </div>
-        )}
-
         {/* User Info */}
         {isAuthenticated && user && (
           <div className="flex items-center gap-3">
