@@ -17,7 +17,6 @@ type NoteEditorProps = {
 
 export default function NoteEditor({
   title,
-  contentJson,
   onChangeTitle,
   onChangeContent,
   selectedNote,
@@ -46,13 +45,15 @@ export default function NoteEditor({
     }
 
     try {
-      const parsed = contentJson ? JSON.parse(contentJson) : EMPTY_TIPTAP_DOC;
+      const parsed = selectedNote.contentJson
+        ? JSON.parse(selectedNote.contentJson)
+        : EMPTY_TIPTAP_DOC;
 
       editor.commands.setContent(parsed, { emitUpdate: false });
     } catch {
       editor.commands.setContent(EMPTY_TIPTAP_DOC, { emitUpdate: false });
     }
-  }, [editor, selectedNote, contentJson]);
+  }, [editor, selectedNote]);
 
   return (
     <main className="flex-1 overflow-hidden rounded-xl border bg-white shadow-sm">
