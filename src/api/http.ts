@@ -45,3 +45,8 @@ export async function request<T>(
 
   return JSON.parse(raw) as T;
 }
+
+export function isServiceUnavailable(err: unknown): boolean {
+  if (typeof err === "string") return err.includes("(500 ")
+  return err instanceof Error && err.message.includes("(500 ")
+}

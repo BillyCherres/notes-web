@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { getNotes } from "../api/notesApi" // adjust path
+import { getNotes } from "../api/notesApi"
+import { isServiceUnavailable } from "../api/http"
 import type { Note } from "../types/Note"
 import type { Page } from "../types/Page"
 
@@ -51,7 +52,19 @@ export default function NoteList({ selectedId, onSelect, refreshKey }: NoteListP
       </div>
 
       <div className="max-h-full overflow-y-auto p-2">
-        {error && (
+        {error && isServiceUnavailable(error) && (
+          <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+            <div className="mb-3 text-4xl">🗄️</div>
+            <div className="mb-1 text-sm font-semibold text-gray-700">
+              Notes unavailable
+            </div>
+            <div className="text-xs text-gray-500">
+              We've hit our monthly database limit. Notes will be back at the start of next month.
+            </div>
+          </div>
+        )}
+
+        {error && !isServiceUnavailable(error) && (
           <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             {error}
           </div>

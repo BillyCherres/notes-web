@@ -4,9 +4,12 @@ import type { Note } from "../types/Note";
 import NoteList from "../components/NoteList";
 import NoteEditor from "../components/NoteEditor";
 import { createNote, deleteNote, updateNote } from "../api/notesApi";
+import { isServiceUnavailable } from "../api/http";
 import { EMPTY_TIPTAP_DOC_STRING } from "../editor/emptyDoc";
 
 export default function NotesPage() {
+  const [serviceDown, setServiceDown] = useState(false);
+
   const handleNew = async () => {
     try {
       const created = await createNote({
@@ -16,20 +19,19 @@ export default function NotesPage() {
       handleSelect(created);
       refreshNotes();
     } catch (err) {
-      console.log(err);
+      if (isServiceUnavailable(err)) setServiceDown(true);
+      else console.log(err);
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      console.log("before delete");
       await deleteNote(id);
-      console.log("after delete (no throw)");
       setSelectedNote(null);
       refreshNotes();
-      console.log("after refreshNotes");
     } catch (err) {
-      console.log("DELETE threw:", err);
+      if (isServiceUnavailable(err)) setServiceDown(true);
+      else console.log("DELETE threw:", err);
     }
   };
 
@@ -70,7 +72,8 @@ export default function NotesPage() {
       setIsDirty(false);
       refreshNotes();
     } catch (err) {
-      console.log(err);
+      if (isServiceUnavailable(err)) setServiceDown(true);
+      else console.log(err);
     }
   };
 
@@ -78,6 +81,18 @@ export default function NotesPage() {
     if (!selectedNote) return;
     await handleSave(selectedNote.id, draftTitle, draftContentJson);
   };
+
+  if (serviceDown) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-gray-100 text-center">
+        <div className="mb-4 text-6xl">🗄️</div>
+        <div className="mb-2 text-lg font-semibold text-gray-700">Notes unavailable</div>
+        <div className="max-w-sm text-sm text-gray-500">
+          We've hit our monthly database limit. Notes will be back at the start of next month.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-gray-100">
